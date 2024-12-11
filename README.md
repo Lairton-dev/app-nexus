@@ -25,6 +25,7 @@ App Nexus/
 |   ├── chat.html           # Página principal do chat.
 |   ├── nexus-chat-.css   # estilo CSS da página principal do chat;
 |   └── nexus-style.css  # estilo CSS das páginas de login e cadastro.
+├── database/   # Pasta onde serão criado os banco de dados quando o app for executado.
 ├── imgs_projeto/          # Imagens do projeto para documentação
 └── README.md              # Documentação do projeto
 ```
