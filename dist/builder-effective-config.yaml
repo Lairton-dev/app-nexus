@@ -1,0 +1,16 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.nexus.app
+productName: Nexus
+files:
+  - filter:
+      - '**/*'
+mac:
+  category: public.app-category.social-networking
+  icon: ./frontend/icons/icon-nexus-removebg-preview.png
+win:
+  target: nsis
+  sign: false
+  icon: ./frontend/icons/icon-nexus.png
+electronVersion: 33.2.1

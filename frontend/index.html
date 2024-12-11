@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus</title>
+    <link rel="stylesheet" href="nexus-style.css">
+</head>
+<body>
+    <div class="login_account">
+        <form action="/entrar-conta" method="post" id="form-logar">
+            <img src="icons/icon-nexus-removebg-preview.png" alt="icone transparente da Nexus">
+            <h1>Bem vindo (a) denovo ao Nexus</h1>
+            <p>Entre com sua conta criada anteriormente.</p>
+            <label for="nome">Nome de usuário </label>
+            <input class="dados" type="text" id="nome" name="nomeuser" placeholder="Ensira seu nome de usuário" required>
+            <label for="senha">Senha </label>
+            <input class="dados" type="text" id="senha" name="senhauser" placeholder="ensira sua senha de acesso" required>
+            <button type="submit">Entrar</button>
+            <a href="/cadastro">criar conta</a>
+        </form>
+        <img src="icons/nexus-ilustrativo.png" alt="imagem ilustrativa" width="570px" style="border-radius: 0 20px 20px 0; border: 10px solid rgb(0, 0, 0);" class="ilustrativa">
+    </div>icons
+    <script>
+        // quando carregar a página verifica se a dados de login salvo
+        window.addEventListener("load", ()=>{
+            if(window.localStorage.nome && window.localStorage.senha) {
+                document.getElementsByName("nomeuser")[0].value = window.localStorage.nome
+                document.getElementsByName("senhauser")[0].value = window.localStorage.senha
+            }
+        })
+        
+        const form = document.getElementById("form-logar");
+        const apiUrl = '/entrar-conta';
+
+        // Quando o formulário for enviado
+        form.addEventListener('submit', function(event) { 
+            event.preventDefault(); // Impede o comportamento padrão de envio do formulário
+
+            // Cria os dados do formulário manualmente no formato URL-encoded
+            const formData = new URLSearchParams(new FormData(form));
+
+            // Envia os dados para o servidor
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString(), // Transforma os dados em uma string
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Resposta do servidor:', data.message);
+
+                if (data.message === 'Login bem-sucedido!') {
+                    alert('Login realizado com sucesso!');
+                    window.location.href = "/chat"; // Redireciona para o chat
+                } else {
+                    alert(data.message || 'Erro ao fazer login. Tente novamente!');
+                }
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Erro ao fazer login:', error);
+                alert('Erro ao fazer login. Tente novamente!');
+            });
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+.create_account {
+    background-color: rgb(9, 3, 22);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create_account form {
+    background-color: black;
+    padding: 12px;
+    width: 450px;
+    height: auto;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.514);
+    padding: 13px 24px;
+}
+.create_account form img {
+    width: 160px;
+    display: block;
+    margin: auto;
+    cursor: pointer;
+}
+.create_account form h1 {
+    font-size: 22px;
+    padding: 12px;
+    text-align: center;
+}
+.create_account form p{
+    padding: 12px;
+    color: rgba(206, 182, 253, 0.658);
+    font-weight: 100;
+}
+.create_account form label {
+    display: block;
+    padding: 12px;
+    font-size: larger;
+    color: rgb(206 182 253);
+    font-weight: 600;
+}
+.create_account form input.dados {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: 1px solid rgb(118, 45, 255);
+    padding: 15px;
+    color: rgb(206 182 253);
+    border-radius: 20px;
+}
+
+.create_account form textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    background-color: black;
+    outline: none;
+    border: 1px solid rgb(118, 45, 255);
+    color: rgb(206 182 253);
+    font-size: larger;
+    padding: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    resize: none;
+}
+.create_account form label[for="foto"] {
+    padding: 12px;
+    background-color: blueviolet;
+    border-radius: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.create_account form input#foto {
+    display: none;
+}
+
+.create_account form input::placeholder, .create_account form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.123);
+}
+
+.create_account form button[type=submit] {
+    display: block;
+    margin: auto;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 12px;
+    width: 220px;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    border: 1px solid white;
+    transition: 0.5s;
+    font-weight: 500;
+}
+.create_account form button:hover{
+    background-color: blueviolet;
+    color: white;
+    border: 1px solid blueviolet;
+}
+.create_account form a {
+    display: block;
+    margin: auto;
+    margin-top: 15px;
+    background-color: transparent;
+    outline: none;
+    color: blueviolet;
+    font-weight: 700;
+    border: none;
+    font-size: larger;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.login_account {
+    background-color: rgb(9, 3, 22);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login_account form {
+    background-color: black;
+    padding: 12px;
+    width: 400px;
+    height: auto;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.514);
+    padding: 13px;
+}
+.login_account form img {
+    width: 160px;
+    display: block;
+    margin: auto;
+    cursor: pointer;
+}
+.login_account form h1 {
+    font-size: 22px;
+    padding: 12px;
+    text-align: center;
+}
+.login_account form p{
+    padding: 12px;
+    color: rgba(206, 182, 253, 0.658);
+    font-weight: 100;
+}
+.login_account form label {
+    display: block;
+    padding: 12px;
+    font-size: larger;
+    color: rgb(206 182 253);
+    font-weight: 600;
+}
+.login_account form input.dados {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: 1px solid rgb(118, 45, 255);
+    padding: 15px;
+    color: rgb(206 182 253);
+    border-radius: 20px;
+}
+.login_account form a {
+    display: block;
+    margin: auto;
+    margin-top: 15px;
+    background-color: transparent;
+    outline: none;
+    color: blueviolet;
+    font-weight: 700;
+    border: none;
+    font-size: larger;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+.login_account form button[type=submit] {
+    display: block;
+    margin: auto;
+    padding: 12px;
+    margin-top: 21px;
+    border-radius: 12px;
+    width: 220px;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    border: 1px solid white;
+    transition: 0.5s;
+    font-weight: 500;
+}
+.login_account form button:hover{
+    background-color: blueviolet;
+    color: white;
+    border: 1px solid blueviolet;
+}
+
+
+@media screen and (max-width: 720px) {
+    .ilustrativa{
+        display: none;
+    }
+}

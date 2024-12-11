@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus</title>
+    <link rel="stylesheet" href="nexus-chat.css">
+</head>
+<body>
+    <!-- O overlay para exibir a imagem ampliada -->
+    <div id="overlay">
+        <button id="close-btn">X</button>
+        <img id="overlay-img" src="" alt="Imagem Ampliada">
+    </div>
+    <div id="configurações" class="configurações hide">
+        <div class="main">
+            <label for="colorPicker">Cor de fundo</label>
+            <span style="padding: 5px; margin-bottom: 12px; color: rgba(255, 255, 255, 0.295); display: block;">A cor salva automaticamente ao fechar as configurações</span>
+            <input type="color" name="corfundo" id="colorPicker" style="display: none;">
+            <div id="colorPreview" style="margin-left: 8px; width: 50px; height: 50px; border: 1px solid #000000; border: 1px solid white; border-radius: 50%; cursor: pointer;"></div>
+            <form id="form-new-dados" action="/alterar-dados-perfil" method="post" enctype="multipart/form-data">
+                <label for="nome">Alterar nome: </label>
+                <input type="text" name="newnomeuser" id="newnome" placeholder="seu novo nome" required>
+                <label for="senha">Alterar senha: </label>
+                <input type="text" name="newsenhauser" id="newsenha" placeholder="sua nova senha" required>
+                <label for="newfoto">Alterar foto de perfil </label>
+                <input type="file" name="newavatar" id="newfoto">
+                <input type="text" name="userid" id="id_user" style="display: none;">
+                <button type="submit">Salvar e enviar</button>
+            </form>
+            <button id="close-config">fechar</button>
+        </div>
+    </div>
+    <main class="chat" id="chat">
+        <div class="menu-main">
+            <img alt="avatar" id="avatar" class="clickable-image">
+            <h1 id="nome"></h1>
+            <span id="url" style="display: block; padding: 8px; text-align: center; color: rgba(240, 248, 255, 0.432);"></span>
+            <div class="menu-main-0">
+                <button id="config">configurações</button>
+                <button id="sair" style="color: red;">sair</button>
+            </div>
+        </div>
+        <div class="messages-main" id="messages-main">
+        </div>
+        <div class="send-message">
+            <span class="digitando" id="typing-indicator"></span>
+            <form method="post" enctype="multipart/form-data" id="send-message-form">
+                <label for="imagem">
+                    <img src="icons/send-file-xxl.png"  data-restricted="true" alt="enviar arquivo">
+                </label>
+                <input type="file" name="imagem" id="imagem">
+                <textarea maxlength="1300" minlength="2" name="mensagem" id="mensagem" placeholder="envie sua mensagem" required></textarea>
+                <button type="submit">
+                    <img src="icons/send.png"  data-restricted="true" alt="botão enviar">
+                </button>
+            </form>
+        </div>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // quando carregar insere no HTML dados de avatar e nome e carrega mensagens de forma assincrona
+        window.addEventListener("load", async () => { // Tornando a função assíncrona
+        const img_avatar = document.getElementById("avatar");
+        const url = document.getElementById("url");
+        const name_tag = document.getElementById("nome");
+
+        img_avatar.src = window.localStorage.avatar;
+        name_tag.innerText = window.localStorage.nome;
+        url.innerText = "acesse pelo navegador: " +  window.location.origin;
+        // carrega a cor de fundo
+        if(window.localStorage.colorfundo) {
+            document.body.style.backgroundColor = window.localStorage.colorfundo;
+            document.getElementById("colorPreview").style.backgroundColor = window.localStorage.colorfundo;
+        }
+        // carrega o id no input de configuração para enviar o server para alterações
+        if(window.localStorage.id) {
+            document.getElementById("id_user").value = window.localStorage.id;
+        } 
+        // Carregar mensagens salvas
+        try {
+            const response = await fetch('/mensagens'); // Espera pela resposta da requisição
+            const mensagens = await response.json(); // Converte a resposta para JSON
+
+            // Exibe as mensagens no chat
+            mensagens.forEach((msg) => {
+                const { avatar, autor, conteudo, imagem } = msg;
+
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message");
+
+                const avatarImage = document.createElement("img");
+                avatarImage.src = avatar;
+                avatarImage.classList.add("avatar_autor");
+                avatarImage.classList.add("clickable-image");
+
+                const messageBody = document.createElement("div");
+                messageBody.classList.add("message-body");
+
+                const autorSpan = document.createElement("span");
+                autorSpan.classList.add("autor-message");
+                autorSpan.textContent = autor;
+
+                const contentDiv = document.createElement("div");
+                contentDiv.classList.add("message-content");
+                contentDiv.innerHTML = conteudo; // Adiciona o conteúdo, incluindo links formatados
+
+                messageBody.append(autorSpan, contentDiv);
+
+                if (imagem) {
+                    const image = document.createElement("img");
+                    image.src = imagem;
+                    image.classList.add("message-image");
+                    image.classList.add("clickable-image");
+                    messageBody.appendChild(image);
+                }
+
+                messageDiv.append(avatarImage, messageBody);
+                document.getElementById("messages-main").appendChild(messageDiv);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar as mensagens:', error);
+        }
+    });
+
+
+
+        // botão para sair (redireciona paraa página de login)
+        document.getElementById("sair").addEventListener("click", ()=>{
+            window.location.href = "/";
+        })
+
+        const socket = io();
+        const form = document.getElementById("send-message-form");
+
+        // Função para destacar links clicáveis nas mensagens
+        function formatarLinks(texto) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return texto.replace(urlRegex, (url) => `<a class="link" href="${url}" target="_blank">${url}</a>`);
+        }
+
+        // Enviar mensagem
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form); // Formulário com imagem e mensagem
+            const mensagem = formData.get("mensagem").trim(); // Conteúdo da mensagem
+            const imagem = formData.get("imagem"); // Imagem anexada
+            const avatar = window.localStorage.avatar;
+            const autor = window.localStorage.nome;
+
+            // Caso tenha imagem
+            if (imagem && imagem.name) {
+                const formDataImagem = new FormData();
+                formDataImagem.append("imagem", imagem);
+
+                // Envia a imagem para o servidor
+                fetch("/upload", {
+                    method: "POST",
+                    body: formDataImagem
+                }).then(response => response.json())
+                .then(data => {
+                    // Envia a mensagem com a imagem
+                    socket.emit("mensagem", {
+                        avatar,
+                        autor,
+                        conteudo: formatarLinks(mensagem),
+                        imagem: data.imageUrl, // URL da imagem enviada
+                        timestamp: new Date().toISOString()
+                    });
+                }).catch(error => {
+                    console.error("Erro no upload da imagem", error);
+                });
+
+            } else {
+                // Envia mensagem sem imagem
+                socket.emit("mensagem", {
+                    avatar,
+                    autor,
+                    conteudo: formatarLinks(mensagem),
+                    imagem: null,
+                    timestamp: new Date().toISOString()
+                });
+            }
+
+            // Limpa o formulário após o envio
+            form.reset();
+        });
+
+        // Exibindo mensagens recebidas no chat
+        socket.on("mensagem", (msg) => {
+            const { avatar, autor, conteudo, imagem } = msg;
+
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+
+            const avatarImage = document.createElement("img");
+            avatarImage.src = avatar;
+            avatarImage.classList.add("avatar_autor");
+            avatarImage.classList.add("clickable-image");
+
+            const messageBody = document.createElement("div");
+            messageBody.classList.add("message-body");
+
+            const autorSpan = document.createElement("span");
+            autorSpan.classList.add("autor-message");
+            autorSpan.textContent = autor;
+
+            const contentDiv = document.createElement("div");
+            contentDiv.classList.add("message-content");
+            contentDiv.innerHTML = conteudo; // Adiciona o conteúdo, incluindo links formatados
+
+            messageBody.append(autorSpan, contentDiv);
+
+            if (imagem) {
+                const image = document.createElement("img");
+                image.src = imagem;
+                image.classList.add("message-image");
+                image.classList.add("clickable-image");
+                messageBody.appendChild(image);
+            }
+
+            messageDiv.append(avatarImage, messageBody);
+            document.getElementById("messages-main").appendChild(messageDiv);
+        });
+
+            // Seleciona o textarea e a área onde o nome do digitador será exibido
+            const textarea = document.getElementById('mensagem');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            // Variável para armazenar o temporizador
+            let typingTimeout;
+
+            // Quando o usuário começa a digitar no textarea
+            textarea.addEventListener('input', () => {
+                // Envia um evento para o servidor indicando que o usuário está digitando
+                socket.emit('digitando', {
+                    nome: window.localStorage.nome // Pega o nome armazenado no localStorage
+                });
+
+                // Reseta o temporizador para limpar a mensagem após um tempo de inatividade
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    // Se o usuário parar de digitar por 2 segundos, avisa ao servidor para remover o indicador
+                    socket.emit('parou-de-digitando', window.localStorage.nome);
+                }, 500); // Ajuste o tempo conforme necessário
+            });
+
+            // Para exibir a informação de quem está digitando
+            socket.on('mostrar-digitando', (nome) => {
+                typingIndicator.textContent = `${nome} está digitando...`;
+            });
+
+            // Para remover a mensagem de "está digitando..." quando o usuário parar de digitar
+            socket.on('parou-de-digitando', (nome) => {
+                // Verifica se o nome que parou de digitar está sendo exibido
+                if (typingIndicator.textContent.includes(nome)) {
+                    typingIndicator.textContent = ''; // Limpa a mensagem
+                }
+            });
+            
+            // botão de configurações
+            const config = document.getElementById("config");
+            const main_config = document.getElementById("configurações");
+            // quando clicar em configurações
+            config.addEventListener("click", ()=>{
+                main_config.classList.remove("hide");
+            })
+            // input de cor
+            const colorPicker = document.getElementById('colorPicker');
+            const colorPreview = document.getElementById('colorPreview');
+
+            colorPicker.addEventListener('input', () => {
+                colorPreview.style.backgroundColor = colorPicker.value;
+                window.localStorage.setItem("colorfundo", colorPicker.value);
+            });
+
+            colorPreview.addEventListener("click", () => {
+                colorPicker.click(); // Abre o seletor de cores
+            });
+
+            // botão fechar configurações
+            const close_config = document.getElementById("close-config");
+            close_config.addEventListener("click", ()=>{
+                // Recarrega a página
+                location.reload(true);
+            })
+
+            // formulário de configuração que altera os dados do usuário
+            document.getElementById('form-new-dados').addEventListener('submit', async (event) => {
+                event.preventDefault(); // Evita o recarregamento da página
+
+                const form = event.target;
+                const formData = new FormData(form); // Cria o FormData para enviar os dados (inclusive arquivos)
+
+                try {
+                    const response = await fetch('/alterar-dados-perfil', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erro ao enviar os dados.');
+                    }
+
+                    const result = await response.json(); // Resposta do servidor, com a URL do avatar
+
+                    // Exibe mensagem de sucesso ou trata erros
+                    if (result.message) {
+                        alert(result.message);
+
+                        // Alterar nome no localStorage
+                        const newNome = formData.get("newnomeuser");  // Novo nome
+                        const newSenha = formData.get("newsenha");
+                        window.localStorage.setItem("nome", newNome);
+                        window.localStorage.setItem("senha", newSenha);
+                        // Verificar se o servidor retornou a URL da nova imagem
+                        if (result.avatar) {
+                            const newAvatarUrl = result.avatar; // URL da imagem retornada pelo servidor
+                            window.localStorage.setItem("avatar", newAvatarUrl); // Atualiza no localStorage
+                            document.getElementById("avatar").src = newAvatarUrl; // Atualiza o avatar na interface
+                        }
+
+                        // Atualiza o nome na interface
+                        document.getElementById("nome").innerText = newNome;
+                        document.getElementById("avatar").src = window.localStorage.avatar;
+
+                    } else {
+                        alert('Erro inesperado no servidor.');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar os dados:', error.message);
+                    alert('Não foi possível alterar os dados. Tente novamente mais tarde.');
+                }
+            });
+
+
+                // Função para mostrar a imagem ampliada
+            function showImage(event) {
+                const overlay = document.getElementById('overlay');
+                const overlayImg = document.getElementById('overlay-img');
+                
+                // Define a fonte da imagem ampliada
+                overlayImg.src = event.target.src;
+
+                // Exibe o overlay
+                overlay.style.display = 'flex';
+            }
+
+            // Função para fechar o overlay
+            function closeOverlay() {
+                const overlay = document.getElementById('overlay');
+                overlay.style.display = 'none';
+            }
+
+
+            document.body.addEventListener('click', function(event) {
+                if (event.target.tagName.toLowerCase() === 'img') {
+                     // Verifique se a imagem clicada tem o atributo data-restricted igual a "true"
+                    const isRestricted = event.target.getAttribute('data-restricted') === 'true';
+
+                    if (isRestricted) {
+                        console.log('Imagem restrita clicada:', event.target.src);
+                    } else {
+                        const overlay = document.getElementById('overlay');
+                        const overlayImg = document.getElementById('overlay-img');
+                        
+                        // Define a fonte da imagem ampliada
+                        overlayImg.src = event.target.src;
+
+                        // Exibe o overlay
+                        overlay.style.display = 'flex';
+                    }
+                }
+            });
+            // Adiciona o evento de clique no botão de fechar
+            document.getElementById('close-btn').addEventListener('click', closeOverlay);
+    </script>
+</body>
+</html>

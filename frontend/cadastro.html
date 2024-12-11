@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus</title>
+    <link rel="stylesheet" href="nexus-style.css">
+    <link rel="shortcut icon" href="icons/icon-nexus-removebg-preview.png" type="image/x-icon">
+</head>
+<body>
+    <div class="create_account" id="cadastro">
+        <img class="ilustrativa" src="icons/icone para plataforma de mensagens instantaneas para profissionais de tecnologia chamado Nexus.png" alt="imagem ilustrativa" width="650px" style="border-radius: 20px 0 0 20px; border: 10px solid rgb(0, 0, 0);">
+        <form action="/criar-perfil" method="post" enctype="multipart/form-data" id="createProfileForm">
+            <img src="icons/icon-nexus-removebg-preview.png" alt="icone transparente da Nexus">
+            <h1>Cadastre-se no Nexus</h1>
+            <p>
+                Todos os seus dados serão salvos em um banco de dados local sem qualquer conexão com a internet.
+            </p>
+            <label for="nome">crie seu nome de usuário </label>
+            <input class="dados" type="text" id="nome" name="nomeuser" placeholder="Ensira seu nome de usuário" required>
+            <label for="senha">crie sua senha </label>
+            <input class="dados" type="text" id="senha" name="senhauser" placeholder="crie sua senha de acesso" required>
+            <label for="foto">Envie sua foto de perfil </label>
+            <input type="file" id="foto" name="foto">
+            <button type="submit">Criar perfil</button>
+            <a href="/">Entrar com um perfil</button>
+        </form>
+    </div>
+    <script>
+
+
+            // Seleciona o formulário e a URL do backend
+            const form = document.getElementById('createProfileForm');
+            const apiUrl = '/criar-perfil'; // Caminho da rota no servidor
+
+            // Quando o formulário for enviado
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Impede o comportamento padrão de envio do formulário
+                
+                // Cria uma instância do FormData
+                const formData = new FormData(form);
+
+                // Envia os dados para o servidor
+                fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json()) // Agora estamos esperando um JSON
+                .then(data => {
+                    console.log('Resposta do servidor:', data);
+
+                    if (data.message === 'Perfil criado com sucesso!') {
+                      alert('Perfil criado com sucesso, vc também pode acessar pelo navegador!');
+                    } else {
+                        alert('Erro ao criar perfil. Tente novamente!');
+                    }
+
+                    // Limpeza, redirecionamento e salvar dados
+                    window.localStorage.setItem('nome', document.getElementsByName("nomeuser")[0].value);
+                    window.localStorage.setItem('senha', document.getElementsByName("senhauser")[0].value);
+                    window.localStorage.setItem("id", data.userId);
+                    const file = document.getElementsByName("foto")[0].files[0];
+                    if (file) {
+                        window.localStorage.setItem('avatar', data.avatar);
+                    }
+                    form.reset();
+                    window.location.href = "/chat";
+                })
+
+            });
+    </script>
+</body>
+</html>
