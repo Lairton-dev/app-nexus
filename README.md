@@ -29,28 +29,8 @@ App Nexus/
 └── README.md              # Documentação do projeto
 ```
 
-## Como Executar o Projeto
-### Pré-requisitos
-Certifique-se de ter o seguinte instalado em sua máquina:
-- Node.js (versão 14 ou superior)
-- npm (gerenciador de pacotes do Node.js)
-
-### Passos
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/projeto-nexus.git
-   cd projeto-nexus
-   ```
-2. Instale as dependências:
-   ```bash
-   cd backend
-   npm install
-   ```
-3. Inicie o servidor:
-   ```bash
-   npm start
-   ```
-4. Abra o arquivo `index.html` no navegador para acessar o front-end.
+## Como Executar o Projeto?
+Faça o download do arquivo instalador **Nexus Setup v1.0.0.exe** e abra o app que começará a ser executado e funcionando.
 
 ## Imagens do Projeto
 ### Tela de Login
@@ -83,5 +63,5 @@ Contribuições são bem-vindas! Siga os passos abaixo para contribuir:
 Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` para mais informações.
 
 ---
-**Desenvolvido por [Seu Nome].**
+**Desenvolvido por Lairton Gonçalves.**
 
