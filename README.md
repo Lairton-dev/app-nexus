@@ -31,7 +31,8 @@ App Nexus/
 ```
 
 ## Como Executar o Projeto?
-Faça o download do arquivo instalador **Nexus Setup v1.0.0.exe** e abra o app que começará a ser executado e funcionando.
+Faça o download do arquivo instalador **Nexus Setup v1.0.0.exe** e abra o app que começará a ser executado e funcionando, ou alternativamente o download direto do app executavel Neuxs.
+
 
 ## Imagens do Projeto
 ### Tela de Login
