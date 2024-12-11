@@ -60,7 +60,7 @@ Contribuições são bem-vindas! Siga os passos abaixo para contribuir:
 5. Abra um pull request.
 
 ## Licença
-Este projeto está licenciado sob a Licença MIT. Consulte o arquivo `LICENSE` para mais informações.
+Este projeto está licenciado sob a Licença GNU General Public License v3.0. Consulte o arquivo `LICENSE` para mais informações.
 
 ---
 **Desenvolvido por Lairton Gonçalves.**
