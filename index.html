@@ -1,1 +1,36 @@
-Olá mundo
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="frontend/icons/icon-nexus.png" type="image/x-icon">
+    <title>Projeto Nexus</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {width: 100vw; height: 100vh; background-color: #101524; color: white;  font-family: 'Courier New', Courier, monospace; overflow-x: hidden;} 
+        main {max-width: 500px; height: auto; margin: auto;}
+        main > img { display: block; width: 120px; border-radius: 50%; margin: auto;}
+        main h1 {padding: 24px;}
+        main > p {background-color: #090c14; padding: 8px; border-radius: 4px; margin-bottom: 8px;}
+        details > img {max-width: 600px;}
+    </style>
+</head>
+<body>
+    <main>
+        <img src="frontend/icons/icon-nexus-removebg-preview.png" alt="icone nexus">
+        <h1>Projeto Nexus</h1>
+        <p>
+            Nexus é app de mensagens instântaneas multimidia (texto, links e imagens) totalmente offline para comunicação local sem internet e wm tempo real. o App tem uma interface simples mais funcional e intuitiva com configurações básicas de cor do fundo do layout e alteração de dados do usuário. <br>
+            clique em saiba mais para visualizar outros detalhes do projeto.
+        </p>
+        <details>
+            <h1>Login</h1>
+            <img src="imgs_projeto/login.png" alt="imagem da página de login" onclick="viewImage">
+            <h1>Cadastro</h1>
+            <img src="imgs_projeto/cadsstro.png" alt="imagem da página de cadastro" onclick="viewImage">
+            <h1>Chat principal</h1>
+            <img src="imgs_projeto/chat.png" alt="imagem da página do chat principal" onclick="viewImage">
+        </details>
+    </main>
+</body>
+</html>
