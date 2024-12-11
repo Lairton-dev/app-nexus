@@ -20,17 +20,26 @@
         <img src="frontend/icons/icon-nexus-removebg-preview.png" alt="icone nexus">
         <h1>Projeto Nexus</h1>
         <p>
-            Nexus é app de mensagens instântaneas multimidia (texto, links e imagens) totalmente offline para comunicação local sem internet e wm tempo real. o App tem uma interface simples mais funcional e intuitiva com configurações básicas de cor do fundo do layout e alteração de dados do usuário. <br>
+            Nexus é app de mensagens instantâneas multimidia (texto, links e imagens) totalmente offline para comunicação local sem internet e wm tempo real. o App tem uma interface simples mais funcional e intuitiva com configurações básicas de cor do fundo do layout e alteração de dados do usuário. <br>
             clique em saiba mais para visualizar outros detalhes do projeto.
         </p>
         <details>
+            <summary>Mais detalhes</summary>
             <h1>Login</h1>
-            <img src="imgs_projeto/login.png" alt="imagem da página de login" onclick="viewImage">
+            <img src="imgs_projeto/login.png" alt="imagem da página de login" onclick="viewImage()">
             <h1>Cadastro</h1>
-            <img src="imgs_projeto/cadsstro.png" alt="imagem da página de cadastro" onclick="viewImage">
+            <img src="imgs_projeto/cadsstro.png" alt="imagem da página de cadastro" onclick="viewImage()">
             <h1>Chat principal</h1>
-            <img src="imgs_projeto/chat.png" alt="imagem da página do chat principal" onclick="viewImage">
+            <img src="imgs_projeto/chat.png" alt="imagem da página do chat principal" onclick="viewImage()">
         </details>
     </main>
+
+    <script>
+        function viewImage(event) {
+            const e = event.target.src; // Mostra a URL da imagem clicada
+            window.location.href = "/imgs_projeto/" + e;
+        }
+
+    </script>
 </body>
 </html>
