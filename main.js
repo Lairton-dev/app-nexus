@@ -20,7 +20,7 @@ app.on('ready', () => {
     });
 
     // Remover o menu padrão
-   //  Menu.setApplicationMenu(null);
+   Menu.setApplicationMenu(null);
     // Altere a URL para o IP local, ao invés de 'localhost'
     mainWindow.loadURL(`http://${localIP}:${PORT}`); // Aqui você pode usar o IP local
 
